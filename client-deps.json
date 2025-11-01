@@ -1,0 +1,14 @@
+[
+  {
+    "src": "./node_modules/jquery/dist/jquery.min.js", 
+    "dest": "./public/js/jquery.min.js"
+  },
+   {
+    "src": "./classes/client-app.mjs", 
+    "dest": "./public/classes/client-app.mjs"
+  },
+  {
+    "src": "./classes/tone-monitor.mjs", 
+    "dest": "./public/plugins/audio/tone-monitor.mjs"
+  }
+]
