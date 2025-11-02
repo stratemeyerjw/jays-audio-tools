@@ -1,4 +1,4 @@
 {
     "ollama-autocoder.model": "llama3.2:3b",
-    "commitollama.custom.model": "llama3.2:3b"
+    "commitollama.custom.model": "qwen2.5-coder:3b"
 }

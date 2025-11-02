@@ -1,20 +1,65 @@
 import fs from 'fs-extra';
 import path from 'path';
 import LogHandler from './log-handler.mjs';
+
+/**
+ * ClientDepHandler
+ *
+ * Responsible for loading client-side dependencies defined in a
+ * `client-deps.json` file and injecting the corresponding script tags
+ * into an HTML page (`index.html` by default). The class also copies
+ * client dependency files into the configured public folder paths.
+ *
+ * Usage:
+ * ```js
+ * const h = new ClientDepHandler();
+ * h.Refresh();
+ * ```
+ */
 export default class ClientDepHandler{
+ /**
+  * Create a handler for client dependencies.
+  *
+  * @param {LogHandler|null} [logHandler=null] - Optional logger; a new LogHandler will be used when omitted.
+  * @param {string} [pathToClientDepJson='./client-deps.json'] - Path to the JSON file describing client dependencies.
+  * @param {string} [pathToHtmlPage='./index.html'] - Path to the HTML page to inject script tags into.
+  */
  constructor(logHandler = null, pathToClientDepJson = './client-deps.json', pathToHtmlPage='./index.html'){
+    /** @type {LogHandler} */
     this.logHandler = logHandler || new LogHandler();
+    /** @type {string} Absolute path to the HTML page used for injection */
     this.pathToHtmlPage = path.resolve(pathToHtmlPage);
+    /** @type {string} Absolute path to the client deps JSON */
     this.depPath = path.resolve(pathToClientDepJson);
+    /** @type {Buffer|string} Raw HTML page content read from disk */
     this.htmlPage = fs.readFileSync(this.pathToHtmlPage);
+    /**
+     * Array of dependency descriptors. Each entry is expected to be an
+     * object with `src` and `dest` properties.
+     * @type {Array<{src:string,dest:string}>}
+     */
     this.deps = !!fs.existsSync(this.depPath)?fs.readJSONSync(this.depPath):[];
     if(this.deps.length < 1) fs.writeJSONSync(this.depPath, []);
 
  }
+
+ /**
+  * Refresh client dependencies.
+  *
+  * This method reads the configured `client-deps.json`, copies each
+  * dependency file from `src` to `dest`, injects a script tag into the
+  * HTML head for each dependency, and writes the resulting HTML to
+  * `./public/index.html`.
+  *
+  * Errors encountered while copying or injecting a specific dependency
+  * are logged and the process continues with the next dependency.
+  *
+  * @returns {void}
+  */
  Refresh(){
      try{
 
-         
+
          const clientDeps = this.deps;
          this.htmlPage = fs.readFileSync(this.pathToHtmlPage);
          for(let i = 0; i < clientDeps.length; i++){

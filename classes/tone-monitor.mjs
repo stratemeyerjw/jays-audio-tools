@@ -2,7 +2,27 @@
 // - Uses Web Audio API + autocorrelation pitch detection
 // - Emits updates via onUpdate({ hz, note, midi, cents, clarity, running })
 
+/**
+ * ToneMonitor
+ *
+ * Lightweight microphone pitch monitor. It uses the Web Audio API to read
+ * the input waveform and a simple autocorrelation-based pitch estimator to
+ * find the predominant pitch. On each update interval it calls the
+ * `onUpdate` callback with a payload describing the detected pitch and
+ * confidence.
+ *
+ * Example update payload: { hz, note, midi, cents, clarity, rms, running }
+ */
 class ToneMonitor {
+  /**
+   * @param {Object} [opts={}] - Options object
+   * @param {function(Object):void} [opts.onUpdate] - Callback invoked on each update with the payload described above.
+   * @param {number} [opts.minHz=50] - Minimum frequency to detect.
+   * @param {number} [opts.maxHz=2000] - Maximum frequency to detect.
+   * @param {number} [opts.rmsGate=0.01] - Minimum RMS energy to consider the signal valid.
+   * @param {number} [opts.clarityGate=0.75] - Minimum clarity (0..1) required to accept a pitch.
+   * @param {number} [opts.updateHz=30] - How many updates per second to emit to the callback.
+   */
   constructor({
     onUpdate = () => {},
     minHz = 50,
@@ -11,23 +31,38 @@ class ToneMonitor {
     clarityGate = 0.75,   // require decent periodicity
     updateHz = 30         // UI update rate
   } = {}) {
+    /** @type {function(Object):void} */
     this.onUpdate = onUpdate;
+    /** @type {number} */
     this.minHz = minHz;
+    /** @type {number} */
     this.maxHz = maxHz;
+    /** @type {number} */
     this.rmsGate = rmsGate;
+    /** @type {number} */
     this.clarityGate = clarityGate;
+    /** @type {number} milliseconds between updates */
     this.updateInterval = 1000 / updateHz;
 
-    this._ctx = null;
-    this._an = null;
-    this._buf = null;
-    this._raf = 0;
-    this._running = false;
-    this._lastEmit = 0;
+    // Internal runtime state
+    /** @type {AudioContext|null} */ this._ctx = null;
+    /** @type {AnalyserNode|null} */ this._an = null;
+    /** @type {Float32Array|null} */ this._buf = null;
+    /** @type {number} requestAnimationFrame id */ this._raf = 0;
+    /** @type {boolean} */ this._running = false;
+    /** @type {number} timestamp of last emit */ this._lastEmit = 0;
   }
 
+  /** Read-only running state */
   get running() { return this._running; }
 
+  /**
+   * Start monitoring the microphone. Prompts the user for microphone
+   * permission if needed. Once started, the monitor will call `onUpdate`
+   * at the configured rate until `stop()` is called.
+   *
+   * @returns {Promise<void>}
+   */
   async start() {
     if (this._running) return;
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -85,6 +120,11 @@ class ToneMonitor {
     this._raf = requestAnimationFrame(loop);
   }
 
+  /**
+   * Stop monitoring, release media tracks and close the audio context.
+   *
+   * @returns {Promise<void>}
+   */
   async stop() {
     if (!this._running) return;
     cancelAnimationFrame(this._raf);
@@ -100,7 +140,17 @@ class ToneMonitor {
 
 // ---------- helpers ----------
 
+/**
+ * Musical note names used by `midiToNote`.
+ * @type {string[]}
+ */
 const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+
+/**
+ * Convert a MIDI note number to a human-friendly note name (e.g. 69 -> A4).
+ * @param {number} midi - MIDI note number
+ * @returns {string}
+ */
 function midiToNote(midi) {
   const name = NOTE_NAMES[midi % 12];
   const oct = Math.floor(midi / 12) - 1;
@@ -111,6 +161,12 @@ function midiToNote(midi) {
  * Autocorrelation (AMDF-enhanced) pitch estimator.
  * Returns { hz, clarity (0..1), rms }.
  * - clarity is normalized inverse error; closer to 1 is cleaner pitch.
+ *
+ * @param {Float32Array} buf - Time-domain audio buffer
+ * @param {number} sampleRate - Audio sample rate (Hz)
+ * @param {number} minHz - Minimum frequency to consider
+ * @param {number} maxHz - Maximum frequency to consider
+ * @returns {{hz:number,clarity:number,rms:number}}
  */
 function autocorrelate(buf, sampleRate, minHz, maxHz) {
   const n = buf.length;
