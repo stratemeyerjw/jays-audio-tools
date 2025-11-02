@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "dev": "nodemon --watch classes --watch client-css --watch partials --watch client-deps.json --watch index.html --watch treeMap.json index.mjs",
+    "dev": "nodemon --watch classes --watch client-css --watch client-partials --watch client-deps.json --watch index.html --watch treeMap.json index.mjs",
     "start": "node index.mjs"
   },
   "repository": {

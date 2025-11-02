@@ -37,6 +37,8 @@ The project can:
 - `public/` — generated/served static output. `public/index.html` is the output after dependency injection.
 - `client-deps.json` — manifest listing client dependency files with `{ src, dest }` entries.
 
+IMPORTANT: `public/` is a generated output directory (build artifact). Do not edit files directly under `public/` — instead update source files under `client-templates/`, `client-partials/`, `client-css/`, or other source directories and re-run the build/refresh step.
+
 ## Annotated directory tree (top-level)
 
 The following tree is a short, representative view. Use it to locate files quickly.
@@ -119,7 +121,7 @@ When an LLM is asked to help with this project, it should:
 
 - `classes/client-dep-handler.mjs` methods:
 	- `Refresh()` — copies files from `client-deps.json` and injects tags into `./public/index.html`.
-	- `RefreshPartials()` — copies `.hbs` partials from `./partials` to `./public/partials`.
+	- `RefreshPartials()` — copies `.hbs` partials from `./client-partials` to `./public/partials`.
 
 - Template slots to inject content:
 	- `client-templates/main-layout.hbs` — uses `{{title}}`, `{{#menuContent}}...{{/menuContent}}`, and `{{#mainContent}}...{{/mainContent}}` to place content.

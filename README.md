@@ -50,6 +50,8 @@ The `dev` script in `package.json` is currently:
 
 Note: the `dev` command watches several paths and restarts `index.mjs` when changes are detected. If you prefer watching `client-partials` instead of `partials`, update the `dev` script accordingly in `package.json`.
 
+Important: `public/` is a generated output directory (build artifact). Do not edit files directly under `public/`. Make changes in the source directories (`client-templates/`, `client-partials/`, `client-css/`, etc.) and then run the build or `Refresh`/`RefreshPartials()` steps to regenerate `public/`.
+
 To start the server without auto-reload:
 
 ```bash
