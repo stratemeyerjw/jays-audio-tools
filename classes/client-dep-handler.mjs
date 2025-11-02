@@ -67,16 +67,24 @@ export default class ClientDepHandler{
                  const src = clientDeps[i].src;
                  const dest = clientDeps[i].dest;
              fs.copyFileSync(src, dest);
-             this.htmlPage = this.htmlPage.toString().replace("</head>", 
+             let mime = dest.split('.')[dest.split('.').length -1].toLowerCase();
+
+             this.htmlPage = mime !=="css"? this.htmlPage.toString().replace("</head>", 
 `     <script src="${dest.replace('./public/','')}"></script>
 </head>
 
-                `)
+                `):
+                this.htmlPage.toString().replace("</head>", 
+`     <link rel="stylesheet" href="${dest.replace('./public/','')}">
+</head>
+
+                `);
+
              this.logHandler.writeLog(`
  client dependency loaded:
-     src: ${src}
+      src: ${src}
      dest: ${dest}
-                 `);
+`);
              }catch(error){
                 this.logHandler.writeLog(error);
                  continue;
@@ -86,4 +94,31 @@ export default class ClientDepHandler{
      }
      catch(err){this.logHandler.writeLog(err)}
  }
+ async RefreshPartials(){
+        try {
+            const srcDir = './client-partials';
+            const destDir = './public/partials';
+            await fs.ensureDir(srcDir);
+            // Read all files in srcDir
+            const files = fs.readdirSync(srcDir);
+            for (const file of files) {
+                try{
+                if (file.endsWith('.hbs')) {
+                    const srcFile = path.join(srcDir, file);
+                    const destFile = path.join(destDir, file);
+                    fs.copyFileSync(srcFile, destFile);
+                    this.logHandler.writeLog(`
+client hbs depencency loaded: 
+     src:  ${srcFile}
+    dest: ${destFile}
+`);
+                }
+            }catch(error){
+                this.logHandler.writeLog(error);
+                continue}
+            }
+        } catch (err) {
+            this.logHandler.writeLog(err);
+        }
+    }
 }

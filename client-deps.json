@@ -1,4 +1,8 @@
 [
+    {
+    "src": "./client-css/index.css",
+    "dest": "./public/css/index.css"
+  },
   {
     "src": "./node_modules/jquery/dist/jquery.min.js", 
     "dest": "./public/js/jquery.min.js"
@@ -11,4 +15,5 @@
     "src": "./classes/tone-monitor.mjs", 
     "dest": "./public/plugins/audio/tone-monitor.mjs"
   }
+
 ]

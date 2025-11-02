@@ -33,15 +33,23 @@ export default class FilesystemHandler {
          * a plain folder while an object describes nested folders.
          * @type {Object}
          */
-        this.treeMap = {
+        this.treeMap = fs.existsSync('./treeMap.json') ? fs.readJsonSync('./treeMap.json') : {
             "js": null,
             "css": null,
             "classes": null,
+            "partials": null,
             "plugins": {
                 "audio": null,
                 "midi": null
             }
+        };
+        if(!fs.existsSync('./treeMap.json')) {fs.writeJSONSync('./treeMap.json', this.treeMap);
+            this.logHandler.writeLog("Tree map was not found, gereating default treeMap.json");
         }
+        else{
+            this.logHandler.writeLog("Tree map found, using existing treeMap.json")
+        }
+        if(fs.existsSync(this.publicRoot)){fs.ensureDirSync(this.publicRoot);}
     }
 
     /**
@@ -89,12 +97,12 @@ export default class FilesystemHandler {
      */
     async BuildFSTree() {
         try {
-            let t = this.treeMap;
+           
             let c = this.config;
             var pub = !!c.PUBLIC_DIR ? c.PUBLIC_DIR : './public';
             fs.emptyDirSync(pub);
             this._createRelativePaths(this.treeMap).forEach(fp => {
-                fs.ensureDirSync(pub + '/'+fp);
+                fs.ensureDirSync(pub + '/' + fp);
             })
             console.log("public directory tree ensured..")
         }
