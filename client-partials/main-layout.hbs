@@ -1,94 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-        .layout-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
-        .menu-drawer {
-            background: #f4f4f4;
-            transition: width 0.3s ease;
-            width: 50px;
-            min-width: 50px;
-            height: 100%;
-            position: relative;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        .menu-drawer.open {
-            width: 200px;
-            min-width: 200px;
-        }
-        .menu-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            z-index: 2;
-        }
-        .drawer-content {
-            margin-top: 50px;
-            padding: 10px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-        .menu-drawer.open .drawer-content {
-            opacity: 1;
-        }
-        .main-content {
-            flex: 1;
-            background: #fff;
-            padding: 24px;
-            overflow-y: auto;
-        }
-        @media (max-width: 768px) {
-            .menu-drawer.open {
-                width: 160px;
-                min-width: 160px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="layout-container">
-        <div class="menu-drawer" id="menuDrawer">
-            <button class="menu-btn" id="menuBtn">☰</button>
-            <div class="drawer-content">
-                {{#menuContent}}
-                    {{{.}}}
-                {{/menuContent}}
-            </div>
-        </div>
-        <div class="main-content">
-            {{#mainContent}}
-                {{{.}}}
-            {{/mainContent}}
-        </div>
-    </div>
-    <script>
-        document.getElementById('menuBtn').addEventListener('click', function() {
-            document.getElementById('menuDrawer').classList.toggle('open');
-        });
-    </script>
-</body>
-</html>
+<div class="main-layout">
+    <header>
+        <h1>{{pageTitle}}</h1>
+    </header>
+    <nav>
+        <ul>
+            {{#each menuItems}}
+                <li><a href="{{this.url}}">{{this.text}}</a></li>
+            {{/each}}
+        </ul>
+    </nav>
+    <main>
+        {{#if content}}
+            {{{content}}}
+        {{else}}
+            <p>No content provided</p>
+        {{/if}}
+    </main>
+    <footer>
+        <p>{{footerText}}</p>
+    </footer>
+</div>

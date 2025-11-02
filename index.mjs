@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import AudioToolsServer from './classes/audio-tool-server.mjs';
+import AudioToolsServer from './classes/server-side/audio-tool-server.mjs';
 
 
 const c = dotenv.config().parsed || {

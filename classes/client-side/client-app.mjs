@@ -18,6 +18,8 @@ class ClientApp{
     constructor(){
         if(!!ClientApp.instance) return ClientApp.instance;
         /** @type {boolean} True when the app has completed initialization. */
+        this.appRouter = null;
+        this.logHandler = null;
         this.initialized = false;
     }
 
@@ -33,19 +35,15 @@ class ClientApp{
     async Init(){
         try{
             if(this.initialized)return;
-            // NOTE: original implementation sets `this.initialize = true`.
-            // We keep that behavior unchanged to avoid modifying runtime logic.
             this.initialized = true;
-            console.log("Client App Initialized")
+            this.logHandler = new ClientAppLogHandler();
+            this.appRouter = new ClientAppRouter();
+           
+            this.logHandler.writeLog("Client App Initialized")
         }catch(err){
             this.initialized = false;
-            console.error(err);
+           this.logHandler.writeLog(err);
         }
     }
+
 } 
-
-
-$(()=>{
-    window.app = new ClientApp();
-    window.app.Init();
-})

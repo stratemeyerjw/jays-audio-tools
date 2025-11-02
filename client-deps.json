@@ -1,19 +1,30 @@
 [
-    {
+  {
     "src": "./client-css/index.css",
     "dest": "./public/css/index.css"
   },
   {
-    "src": "./node_modules/jquery/dist/jquery.min.js", 
+    "src": "./node_modules/jquery/dist/jquery.min.js",
     "dest": "./public/js/jquery.min.js"
   },
-   {
-    "src": "./classes/client-app.mjs", 
+  {
+    "src": "./node_modules/handlebars/dist/handlebars.min.js",
+    "dest": "./public/js/handlebaars.min.js"
+  },
+  {
+    "src": "./classes/client-side/client-app-log-handler.mjs",
+    "dest": "./public/classes/client-app-log-handler.mjs"
+  },
+  {
+    "src": "./classes/client-side/client-app-router.mjs",
+    "dest": "./public/classes/client-app-router.mjs"
+  },
+  {
+    "src": "./classes/client-side/client-app.mjs",
     "dest": "./public/classes/client-app.mjs"
   },
   {
-    "src": "./classes/tone-monitor.mjs", 
+    "src": "./classes/client-side/tone-monitor.mjs",
     "dest": "./public/plugins/audio/tone-monitor.mjs"
   }
-
 ]
