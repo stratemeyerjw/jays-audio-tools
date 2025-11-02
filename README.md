@@ -1,28 +1,51 @@
 # Jay's Audio Tools
 
-A small Node.js + Express-based collection of utilities and lightweight servers for audio tooling and client-side plugins. This repository is a work-in-progress intended to host small web-based audio utilities (tone monitor, MIDI and audio plugins) and a server that can build and serve client applications and plugin code.
+A web-based suite of audio utilities and tools for musicians, producers, and audio enthusiasts. Built with Node.js and modern web audio technologies.
 
-This README has been updated to reflect recent changes in the repo (new client templates and partials, an implemented partials refresh, and a `dev` nodemon script).
+**Note: This project is in early development. Features and APIs may change frequently.**
 
-## What’s in this repo
+## Project Overview
 
-- `index.mjs` — project entry point; loads configuration and starts the server.
-- `package.json` — node metadata and scripts (notably `build`, `dev`, and `start`).
-- `build.mjs` — helper that constructs the public directory structure using `treeMap.json` and copies client dependencies.
-- `classes/` — server and helper modules (examples: `audio-tool-server.mjs`, `express-server.mjs`, `client-dep-handler.mjs`, `filesystem-handler.mjs`).
-- `client-templates/` — Handlebars/Handlebars-like templates used to generate or serve client-side HTML (e.g. `main-layout.hbs`).
-- `client-partials/` — source partial templates (copied into `./public/partials` by the partials refresh step).
-- `client-css/` — client CSS files used by templates.
-- `public/` — generated static client files served to browsers (HTML, JS, CSS, partials).
-- `client-deps.json` — client dependency manifest (objects with `{ src, dest }` used by `classes/client-dep-handler.mjs`).
+Jay's Audio Tools is a collection of web-based audio utilities including:
+- Tone monitoring and analysis
+- MIDI device integration
+- Audio plugin hosting
+- Real-time audio processing tools
 
-## Notable changes to be aware of
+The project uses a Node.js/Express backend to serve modular audio tools as client-side plugins, making them accessible through any modern web browser.
 
-- `classes/client-dep-handler.mjs` now implements `RefreshPartials()` to copy `.hbs` files from `./client-partials` into `./public/partials`.
-- A new layout template `client-templates/main-layout.hbs` provides a responsive two-column layout with a collapsible menu drawer.
-- `package.json` contains a `dev` script (uses `nodemon`) and a `build` script. See "Development / run" below for details.
+## Installation
 
-## Development / run instructions
+1. Ensure you have [Node.js](https://nodejs.org/) (v16 or higher) installed
+2. Clone this repository:
+   ```bash
+   git clone https://github.com/stratemeyerjw/jays-audio-tools.git
+   cd jays-audio-tools
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+## Running the Application
+
+### Development Mode
+For development with auto-reload on file changes:
+```bash
+npm run dev
+```
+
+### Production Mode
+1. Build the project:
+   ```bash
+   npm run build
+   ```
+2. Start the server:
+   ```bash
+   npm start
+   ```
+
+The application will be available at `http://localhost:3000` by default.
 
 1. Install dependencies:
 
