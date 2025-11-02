@@ -11,5 +11,5 @@ const c = dotenv.config().parsed || {
 c.PORT = !!c.PORT? c.PORT:3000;
 
 const audiotToolServer = new AudioToolsServer(c);
-audiotToolServer.expressServer.StartServer();
+audiotToolServer.Init();
 

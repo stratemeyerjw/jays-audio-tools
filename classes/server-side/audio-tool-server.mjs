@@ -12,8 +12,16 @@ export default class AudioToolsServer {
         
         this.fileSystemHandler.BuildFSTree();
         this.clientDepHandler = clientDepHandler|| new ClientDepHandler(this.logHandler);
-        this.clientDepHandler.RefreshPartials();
-        this.clientDepHandler.Refresh();
         this.expressServer = expressServer||new ExpressServer(this.config, this.logHandler, this.fileSystemHandler);
+    }
+    async Init(){
+        try{
+                await this.clientDepHandler.RefreshPartials();
+                this.clientDepHandler.Refresh();
+                this.expressServer.StartServer();
+        }
+        catch(err){
+            this.logHandler.writeLog(err);
+        }
     }
 }

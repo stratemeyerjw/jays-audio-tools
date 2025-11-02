@@ -13,7 +13,7 @@
  *
  * Example update payload: { hz, note, midi, cents, clarity, rms, running }
  */
-class ToneMonitor {
+class ClientAppToneMonitor {
   /**
    * @param {Object} [opts={}] - Options object
    * @param {function(Object):void} [opts.onUpdate] - Callback invoked on each update with the payload described above.
@@ -242,7 +242,7 @@ function autocorrelate(buf, sampleRate, minHz, maxHz) {
 function clientCheck()
 {
   if(typeof window !== "undefined"){
-  window.ToneMonitor = ToneMonitor;
+  window.ToneMonitor = ClientAppToneMonitor;
  
   }
 }

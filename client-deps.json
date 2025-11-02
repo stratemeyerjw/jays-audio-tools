@@ -24,7 +24,7 @@
     "dest": "./public/classes/client-app.mjs"
   },
   {
-    "src": "./classes/client-side/tone-monitor.mjs",
-    "dest": "./public/plugins/audio/tone-monitor.mjs"
+    "src": "./classes/client-side/client-app-tone-monitor.mjs",
+    "dest": "./public/plugins/audio/client-app-tone-monitor.mjs"
   }
 ]
