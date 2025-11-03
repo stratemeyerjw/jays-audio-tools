@@ -4,4 +4,15 @@ html body {
     right:0px;
     top: 0px;
     bottom:0px;
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+
+}
+body{
+    display: flex;
+    flex-flow: column;
+    justify-items: stretch;
+    justify-content: stretch;
+    align-items: stretch;
+    align-content: stretch;
 }

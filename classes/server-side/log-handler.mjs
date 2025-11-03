@@ -44,7 +44,7 @@ export default class LogHandler {
     }
 
     /**
-     * Toggle debug mode. When active, `writeLog` will also print entries to the console.
+     * Toggle debug mode. When active, `writeLog` will also print entries to the console and save log cache immediately.
      *
      * @returns {void}
      */
@@ -67,12 +67,13 @@ export default class LogHandler {
         const logEntry = {
             id: uuidV4(),
             timestamp: new Date().toISOString(),
-            ...entry
+            locale: new Date().toLocaleString(),
+            entry: entry
         };
 
         this.logCache.push(logEntry);
 
-        if (this.logCache.length >= 10) { // flush threshold
+        if (this.logCache.length >= (this.debugModeActive?0:10)) { // flush threshold
             await this._save();
         }
     }
@@ -102,7 +103,8 @@ export default class LogHandler {
                 this._generateFileName();
             }
 
-            const saveData = [...oldCache, ...this.logCache];
+            const saveData = [].concat(...oldCache, ...this.logCache);
+
             await fs.writeJSON(this.currentFullPath, saveData, { spaces: 2 });
 
             this.logCache.length = 0;
@@ -122,7 +124,7 @@ export default class LogHandler {
         try {
             const id = uuidV4();
             this.currentLogFileName = `${id}.json`;
-            this.currentFullPath = path.join(this.rootDir, this.currentLogFileName);
+            this.currentFullPath = './'+path.join(this.rootDir, this.currentLogFileName);
         } catch (err) {
             console.error('LogHandler._generateFileName error:', err);
         }

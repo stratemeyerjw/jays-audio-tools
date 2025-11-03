@@ -1,22 +1,126 @@
+<style>
+    /* Base styles */
+.main-layout {
+    display: flex;
+    flex-flow: column wrap;
+    align-self: stretch;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    flex-grow: 1;
+    align-items: stretch;
+    justify-content: stretch;
+    align-content: stretch;
+    justify-items: stretch;
+    width: 100%;
+    height: 100%;
+}
+
+    .main-layout-toolbar-top {
+        width: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        min-height: 50px;
+        max-height: 50px;
+        border-bottom: solid 1px;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .main-layout-toolbar-bottom {
+        width: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        min-height: 50px;
+        max-height: 50px;
+        flex-grow: 1;
+        border-top: solid 1px;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .main-layout-content {
+        width: 100%;
+        flex-grow: 1;
+    }
+</style>
+
 <div class="main-layout">
-    <header>
-        <h1>{{pageTitle}}</h1>
-    </header>
-    <nav>
-        <ul>
-            {{#each menuItems}}
-                <li><a href="{{this.url}}">{{this.text}}</a></li>
-            {{/each}}
-        </ul>
-    </nav>
-    <main>
-        {{#if content}}
-            {{{content}}}
-        {{else}}
-            <p>No content provided</p>
-        {{/if}}
-    </main>
-    <footer>
-        <p>{{footerText}}</p>
-    </footer>
+{{#if toolbarTopContent}}
+<div class="main-layout-toolbar-top">
+    {{{toolbarTopContent}}}
 </div>
+{{/if}}
+<div class="main-layout-content">
+{{#if navContent}}
+<div class="main-layout-nav-panel">
+    {{{navContent}}}
+</div>
+{{/if}}
+{{#if mainContent}}
+    {{{mainContent}}}
+{{else}}
+    No content provided
+{{/if}}
+</div>
+{{#if footerContent}}
+<div class="main-layout-toolbar-bottom">
+    {{{footerContent}}}
+</div>
+{{/if}}
+</div>
+
+<script>
+    (function () {
+        // Wait for DOM to be ready
+        function init() {
+            const layout = document.querySelector('.main-layout');
+            if (!layout) return; // Safety check
+
+            const nav = layout.querySelector('.main-layout__nav');
+            const toggleBtn = layout.querySelector('.main-layout__nav-toggle');
+            const closeBtn = layout.querySelector('.main-layout__nav-close');
+            const overlay = layout.querySelector('.main-layout__overlay');
+
+            // Toggle navigation
+            function toggleNav() {
+                nav.classList.toggle('is-open');
+                overlay.classList.toggle('is-visible');
+                document.body.classList.toggle('nav-open');
+            }
+
+            // Close navigation
+            function closeNav() {
+                nav.classList.remove('is-open');
+                overlay.classList.remove('is-visible');
+                document.body.classList.remove('nav-open');
+            }
+
+            // Event listeners
+            toggleBtn.addEventListener('click', toggleNav);
+            closeBtn.addEventListener('click', closeNav);
+            overlay.addEventListener('click', closeNav);
+
+            // Close nav on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeNav();
+            });
+
+            // Close nav on window resize if moving to desktop view
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (window.innerWidth > 480) closeNav();
+                }, 250);
+            });
+        }
+
+        // Run init when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+</script>

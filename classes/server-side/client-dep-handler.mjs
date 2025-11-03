@@ -56,7 +56,7 @@ export default class ClientDepHandler{
   *
   * @returns {void}
   */
- Refresh(){
+ RefreshClientApp(){
      try{
 
 

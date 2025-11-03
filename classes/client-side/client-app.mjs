@@ -38,7 +38,7 @@ class ClientApp{
             this.initialized = true;
             this.logHandler = new ClientAppLogHandler();
             this.appRouter = new ClientAppRouter();
-           
+            await this.appRouter.RenderMainLayout();
             this.logHandler.writeLog("Client App Initialized")
         }catch(err){
             this.initialized = false;
